@@ -1,0 +1,38 @@
+/* 
+    Document   : main
+    Created on : Aug 27, 2013, 10:16:09 PM
+    Author     : jorda_000
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+body{background-color:#e1e1e1; 
+
+
+	
+	}
+
+div{
+
+
+	padding:50px; 
+	margin: 50px auto;
+	width:800px;
+	border:1px;
+	border: 5px solid grey;		
+	border-radius: 80px;
+	
+	 	
+
+        background-image: -ms-linear-gradient(bottom, #FFFFFF 0%, #DEEFA7 100%);background-image: -moz-linear-gradient(bottom, #FFFFFF 0%, #DEEFA7 100%);
+        background-image: -o-linear-gradient(bottom, #FFFFFF 0%, #DEEFA7 100%);
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #FFFFFF), color-stop(1, #DEEFA7));
+        background-image: -webkit-linear-gradient(bottom, #FFFFFF 0%, #DEEFA7 100%);
+        background-image: linear-gradient(to top, #FFFFFF 0%, #DEEFA7 100%);
+        box-shadow: 0px 0px 20px 5px #888888;
+
+}
