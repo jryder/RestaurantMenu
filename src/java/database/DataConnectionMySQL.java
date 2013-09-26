@@ -4,12 +4,13 @@
  */
 package database;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.*;
+import org.apache.commons.beanutils.RowSetDynaClass;
 
 
 /**
@@ -24,14 +25,14 @@ public class DataConnectionMySQL {
 	private String password;
  		
     
-    	public static void main(String[] args) {
+    	public static void main(String[] args) throws SQLException {
 
 		DataConnectionMySQL db = new DataConnectionMySQL();
 		db.driverClassName = "com.mysql.jdbc.Driver";
 		db.url = "jdbc:mysql://192.185.41.212:3306/jryder_java";
 		db.userName = "jryder_java";
 		db.password = "hearts";
-
+            
 		try {
 			  Class.forName (db.driverClassName);
 			  db.conn = DriverManager.getConnection(db.url, db.userName, db.password);
@@ -57,25 +58,13 @@ public class DataConnectionMySQL {
 		try {
 			stmt = db.conn.createStatement();
 			rs = stmt.executeQuery(sql);
-                                                
-			int count = 0;
-			while( rs.next() ) {
-                      System.out.println("\nRecord No: " + (count + 1));
-				System.out.println( "ID: " + rs.getInt("item_id") ); // named field
-				System.out.println( "Description: " + rs.getString("description") ); // named field
-				System.out.println( "Calories: " + rs.getString("calories") );
-				System.out.println( "Price: " + rs.getBigDecimal("price") );
-				count++;
-			}
-			System.out.println( "==================\n" + count + " records found." );
-                                                
+                        RowSetDynaClass rsdc = new RowSetDynaClass(rs);
                         
 		} catch (SQLException sqle) {
 			System.out.println(sqle);
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
-                    
 			try {
 				stmt.close();
 				db.conn.close();
@@ -83,7 +72,9 @@ public class DataConnectionMySQL {
 				System.out.println(e);
 			}
 		}
-
 	}
+        
+        
+        
     
 }
