@@ -39,7 +39,7 @@ public class RestaurantController extends HttpServlet {
 	    
 	    Model model = new Model();
 
-	    String s = request.getParameter("Action");
+	    String action = request.getParameter("Action");
 
 	    String order = null;
 	    order = request.getParameter("placeOrder");
@@ -55,8 +55,6 @@ public class RestaurantController extends HttpServlet {
 		request.setAttribute("orderGrandTotal", model.getOrderGrandTotal());
 		request.setAttribute("tax", model.getTax());
 
-
-
 		request.setAttribute("menu", model.getMenuSelection());
 		RequestDispatcher view =
 			request.getRequestDispatcher("bill.jsp");
@@ -65,7 +63,7 @@ public class RestaurantController extends HttpServlet {
 
 	   } else if (request.getParameter("Delete") != null) {
 
-	       int itemId = Integer.valueOf(request.getParameter("Delete"));
+	       int itemId = Integer.valueOf(request.getParameter("ItemID"));
 	       
 	       //get the specified model
 	       MenuItem mx = model.findItemById(itemId);
@@ -84,6 +82,33 @@ public class RestaurantController extends HttpServlet {
 		view.forward(request, response);
 		
 		
+	 } else if (request.getParameter("Update") != null) {
+		
+	       double price = Double.valueOf(request.getParameter("Price"));
+	       String name = request.getParameter("Name");
+	       int itemId = Integer.valueOf(request.getParameter("ItemID"));
+	       
+	       
+	       MenuItem newMenu = new MenuItem();
+	       
+	       newMenu.setPrice(price);
+	       newMenu.setName(name);
+	       newMenu.setCalories(0);
+	       newMenu.setItemId(itemId);
+	       
+	       //delete record
+	       model.updateMenu(newMenu);	     
+	     
+		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
+
+		request.setAttribute("menu", menu);	     
+		RequestDispatcher view =
+			request.getRequestDispatcher("admin.jsp");
+
+		view.forward(request, response);			
+		
+		
+		
 	   } else if (request.getParameter("Add") != null) {
 
 	       double price = Double.valueOf(request.getParameter("Price"));
@@ -96,27 +121,25 @@ public class RestaurantController extends HttpServlet {
 	       
 	       //delete record
 	       model.insertMenu(newMenu);
-	      
-	       
-		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
-
-		request.setAttribute("menu", menu);
-		RequestDispatcher view =
-			request.getRequestDispatcher("admin.html");
-
-		view.forward(request, response);		
-		
-		
-		
-	    } else if (s != null && s.equals("Admin")) {
 
 		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
 
 		request.setAttribute("menu", menu);
 		RequestDispatcher view =
 			request.getRequestDispatcher("admin.jsp");
+		view.forward(request, response);		
+		
+		
+	    } else if (action != null && action.equals("Admin")) {
+		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
+		request.setAttribute("menu", menu);
+		RequestDispatcher view =
+			request.getRequestDispatcher("admin.jsp");
 
 		view.forward(request, response);
+		
+		
+
 		
 		
 	    } else {
