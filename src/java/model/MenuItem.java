@@ -62,6 +62,10 @@ public class MenuItem {
     
     
     
+    @Override 
+    public String toString(){
+	return " - " + this.getItemId() + " - "  + this.getName() + " - " + this.getPrice() + " - " + this.getCalories();
     
+    }
     
 }

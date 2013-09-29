@@ -18,14 +18,29 @@ public class MenuDAO {
     private DataConnectionStrategy data;
     public MenuDAO(DataConnectionStrategy data) {
 	this.data = data;
+	
     }
 
+    
+    
+    public static void main(String[] args) throws DatabaseException {
+
+	MenuDAO m = new MenuDAO(new DataConnectionMySQL());
+	System.out.println("success");
+	m.findAllMenuItems();
+	
+	
+	//List<MenuItem> m = new List();
+	
+    }
+    
+    
+    
 
     public List<MenuItem> findAllMenuItems() throws DatabaseException {
 
-
-	String sqlString = "Select * "
-		+ " From MenuItems";
+	String sqlString = "Select item_id,description,price,calories "
+		+ " From Menu";
 
 	List<LinkedHashMap<String, String>> list = data.runQuery(sqlString);
 	MenuItem menuItem = null;
@@ -36,10 +51,12 @@ public class MenuDAO {
 	    menuItem = new MenuItem();
 
 	    //add attributes to the customer class
-	    int itemId = (int) m.get("tranID");
+	    int itemId = (int) m.get("item_id");
 	    menuItem.setItemId(itemId);
-
-	    //set other items
+	    
+	    menuItem.setName(m.get("description").toString());
+	    menuItem.setPrice(Double.valueOf(m.get("price").toString()));
+	    menuItem.setCalories(Integer.valueOf(m.get("calories").toString()));
 	    
 	    
 	    menu.add(menuItem);
@@ -75,7 +92,7 @@ public class MenuDAO {
 	//add attributes to the customer class
 	menuItem.setItemId((int) mp.get("item_id"));
 	menuItem.setName((String) mp.get("description"));
-	menuItem.setPrice((double) mp.get("price"));
+	menuItem.setPrice(Double.valueOf(mp.get("price").toString()));
 	menuItem.setCalories((int) mp.get("calories"));
 	//set other items
 
@@ -92,10 +109,11 @@ public class MenuDAO {
 	//convert datetimes to timestamps, which are more database friendly
 	//also handles the nulls appropriately
 
-	String sqlString = "Insert into Menu(item_id,description,price,calories)"
-		+ " Select " + menuItem.getItemId() + "," + menuItem.getName() + "," + menuItem.getPrice()+ "," + menuItem.getCalories();
+	String sqlString = "Insert into Menu(description,price,calories)"
+		+ " Select '" + menuItem.getName() + "'," + menuItem.getPrice()+ "," + menuItem.getCalories();
 	//run update
 
+	System.out.println(sqlString);
 	data.runCode(sqlString);
     }
 
@@ -118,7 +136,7 @@ public class MenuDAO {
     
     public void deleteMenu(MenuItem menu) throws DatabaseException {
 	
-	String sqlString = "delete Menu"
+	String sqlString = "delete from Menu"
 		+ " WHERE item_id = " + menu.getItemId();
 
 	System.out.println(sqlString);

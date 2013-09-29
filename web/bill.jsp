@@ -4,6 +4,7 @@
     Author     : jryder
 --%>
 
+<%@page import="model.MenuItem"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
@@ -35,20 +36,17 @@
 	    <Form method="Post" action ="Controller">
 		<h2>Items Ordered:</h2> <br>	
 		<%
-		    HashMap menu = (HashMap) request.getAttribute("menu");
-		    Iterator it = menu.entrySet().iterator();
-		    while (it.hasNext()) {
-		Map.Entry pairs = (Map.Entry) it.next();
+		    List<MenuItem> menu = (List) request.getAttribute("menu");
+
+			for (MenuItem m : menu){
 		%>
 		
 		
 		
-		<%= "<strong>" + pairs.getKey() + "</strong>" + " - " + pairs.getValue()%> <br>
-		<img src ="images/<%=pairs.getKey()%>.jpg"> <br><br>
-		<%
-			it.remove(); // avoids a ConcurrentModificationException
-		    }
-		%>
+		<%= "<strong>" + m.getName() + "</strong>" + " - " + m.getPrice() %> <br>
+		<img src ="images/<%= m.getName() %>.jpg"> <br><br>
+			
+		<%}%>
 		
 		
 		<h2>Amount Due </h2>

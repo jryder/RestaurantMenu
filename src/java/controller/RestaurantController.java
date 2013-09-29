@@ -49,6 +49,8 @@ public class RestaurantController extends HttpServlet {
 	    if (order != null) { //actually placing an order
 
 		model.calculateOrder(request);
+		
+		
 		request.setAttribute("orderSubTotal", model.getOrderSubTotal());
 		request.setAttribute("orderGrandTotal", model.getOrderGrandTotal());
 		request.setAttribute("tax", model.getTax());
@@ -61,6 +63,51 @@ public class RestaurantController extends HttpServlet {
 
 		view.forward(request, response);
 
+	   } else if (request.getParameter("Delete") != null) {
+
+	       int itemId = Integer.valueOf(request.getParameter("Delete"));
+	       
+	       //get the specified model
+	       MenuItem mx = model.findItemById(itemId);
+	           
+	       
+	       //delete record
+	       model.deleteMenu(mx);
+	      
+	       
+		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
+
+		request.setAttribute("menu", menu);
+		RequestDispatcher view =
+			request.getRequestDispatcher("admin.jsp");
+
+		view.forward(request, response);
+		
+		
+	   } else if (request.getParameter("Add") != null) {
+
+	       double price = Double.valueOf(request.getParameter("Price"));
+	       String name = request.getParameter("Name");
+	       
+	       MenuItem newMenu = new MenuItem();
+	       newMenu.setPrice(price);
+	       newMenu.setName(name);
+	       newMenu.setCalories(0);
+	       
+	       //delete record
+	       model.insertMenu(newMenu);
+	      
+	       
+		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
+
+		request.setAttribute("menu", menu);
+		RequestDispatcher view =
+			request.getRequestDispatcher("admin.html");
+
+		view.forward(request, response);		
+		
+		
+		
 	    } else if (s != null && s.equals("Admin")) {
 
 		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
@@ -70,8 +117,8 @@ public class RestaurantController extends HttpServlet {
 			request.getRequestDispatcher("admin.jsp");
 
 		view.forward(request, response);
-
-
+		
+		
 	    } else {
 
 		List<MenuItem> menu = model.getMenuOptions(); //get menu options from model
@@ -81,16 +128,14 @@ public class RestaurantController extends HttpServlet {
 			request.getRequestDispatcher("checkbox.jsp");
 
 		view.forward(request, response);
+		
+		
 	    }
 
 	} catch (DatabaseException ex) {
 	    Logger.getLogger(RestaurantController.class.getName()).log(Level.SEVERE, null, ex);
 	}
-
-
-
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP

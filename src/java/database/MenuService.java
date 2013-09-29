@@ -49,4 +49,18 @@ public class MenuService {
     
     
     
+     
+    public static void main(String[] args) throws DatabaseException {
+	MenuService m = new MenuService();
+	
+	
+	List<MenuItem> l = m.findAllMenuItems();	
+	
+	for (MenuItem menu: l) {
+	    System.out.println(menu.getCalories());
+	}
+	
+	System.out.println(l);
+    }
+    
 }

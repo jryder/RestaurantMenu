@@ -23,6 +23,42 @@ public class Model {
 
     List<MenuItem> menuOptions = new ArrayList();
     List<MenuItem> menuSelection = new ArrayList();
+    MenuService menuService;
+    
+    //database actions
+    
+    
+    
+    
+    public List<MenuItem> findAllMenuItems() throws DatabaseException {
+	return menuService.findAllMenuItems();
+	
+	
+	
+    }
+
+ 
+    public MenuItem findItemById(int menuId) throws DatabaseException, IllegalArgumentException {
+	return menuService.findItemById(menuId);
+    }
+
+
+
+    public void insertMenu(MenuItem menuItem) throws DatabaseException {
+	menuService.insertMenu(menuItem);
+    }
+
+ 
+    public void updateMenu(MenuItem menuItem) throws DatabaseException {
+	menuService.updateMenu(menuItem);
+    }
+
+    
+    public void deleteMenu(MenuItem menuItem) throws DatabaseException {
+	menuService.deleteMenu(menuItem);
+    }    
+    
+    
     
     
     
@@ -50,21 +86,24 @@ public class Model {
 
 	menuOptions = new ArrayList();
 	menuSelection = new ArrayList();
-	MenuService menuService = new MenuService();
+	menuService = new MenuService();
 	menuOptions = menuService.findAllMenuItems();
     }
 
     
     public void calculateOrder(HttpServletRequest request) {
+	
 	for (MenuItem m: menuOptions) {
-   
-	    String x = request.getParameter(String.valueOf(m.getItemId()));
+	    String x = request.getParameter(String.valueOf(m.getName()));
+	    
+	    System.out.println("LKJ:LKJ:LKJ");
+	    System.out.println(x);
 	    
 	    if (x != null) {
-	    } else {
 		double d = m.getPrice();
 		orderSubTotal += d;
-		menuSelection.add(m); //add to selection
+		menuSelection.add(m); //add to selection		
+	    } else {
 	    }   
 	}
 
@@ -76,7 +115,6 @@ public class Model {
 	//now calculate tax and grand total
 	tax = orderSubTotal * TAXRATE;
 	tax = (double)Math.round(tax * 100 ) / 100;
-	
 	
 	orderGrandTotal = orderSubTotal + tax;
 	orderGrandTotal = (double)Math.round(orderGrandTotal * 100 ) / 100;

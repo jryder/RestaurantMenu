@@ -4,6 +4,7 @@
     Author     : jryder
 --%>
 
+<%@page import="model.MenuItem"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashMap"%>
@@ -19,32 +20,25 @@
     <body>
 
         <div>
-	    <h1>Menu</h1>
+	    <h1>Menu Editor</h1>
 
-	    <Form method="Post" action ="Controller">
-			
-		
+	    
 		<%
-		    HashMap menu = (HashMap) request.getAttribute("menu");
+		    List<MenuItem> menu = (List) request.getAttribute("menu");
+		    for (MenuItem m:menu){%>	
+			<Form method="Post" action ="Controller">
+			<%= m.getName() + " - " + m.getPrice() %>
+			<input type="Submit" id ="<%=m.getName()%>" name="<%= m.getItemId() %>" value ="Delete">
+			<input type="hidden" id ="DeleteItem" name="<%= "Delete" %>" value ="<%= m.getItemId() %>">
+			</form>
+			<br>		     
+			<%}%>
 
-		    Iterator it = menu.entrySet().iterator();
-		    while (it.hasNext()) {
-		Map.Entry pairs = (Map.Entry) it.next();%>
-
-
-		<input type="checkbox" id ="<%=pairs.getKey()%>" name="<%= pairs.getKey()%>" checked ="checked" value ="test">
-		<%= pairs.getKey() + " - " + pairs.getValue()%>
-		<br>
-
-		<%
-			it.remove(); // avoids a ConcurrentModificationException
-		    }
-		%>
-
-		<input id ="submit" type ="Submit" value ="Place Order" name ="placeOrder">
-		
-	    </form>	
-		
+	   	<Form method="Post" action ="Controller">
+		Name: <input id ="Name" type ="text" value ="" name ="Name">
+		Price: <input id ="Price" type ="text" value ="" name ="Price">
+		<input type ="Submit" name="Add" value ="Add">
+		<Form method="Post" action ="Controller">
         </div>
     </body>
 </html>
