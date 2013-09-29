@@ -4,9 +4,10 @@
  */
 package model;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import database.DatabaseException;
+import database.MenuService;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -14,9 +15,17 @@ import javax.servlet.http.HttpServletRequest;
  * @author jryder
  */
 public class Model {
-
+    
+    private double tax;
+    private double orderGrandTotal;
+    private static final double TAXRATE = 0.051;
     private double orderSubTotal;
 
+    List<MenuItem> menuOptions = new ArrayList();
+    List<MenuItem> menuSelection = new ArrayList();
+    
+    
+    
     public double getTax() {
 	return tax;
     }
@@ -25,7 +34,7 @@ public class Model {
 	return orderGrandTotal;
     }
 
-    public HashMap<String, String> getMenuSelection() {
+    public List<MenuItem> getMenuSelection() {
 	return menuSelection;
     }
 
@@ -33,52 +42,30 @@ public class Model {
 	return orderSubTotal;
     }
 
-    public HashMap<String, String> getMenuOptions() {
+    public List<MenuItem> getMenuOptions() {
 	return menuOptions;
     }
-    private double tax;
-    private double orderGrandTotal;
-    private static final double TAXRATE = 0.051;
-    private HashMap<String, String> menuOptions;
-    private HashMap<String, String> menuSelection;
 
-    public Model() {
+    public Model() throws DatabaseException {
 
-	menuOptions = new HashMap<>();
-	menuSelection = new HashMap<>();
-	
-	menuOptions.put("Burger", "15.99");
-	menuOptions.put("Salad", "12.99");
-	menuOptions.put("IPA", "5.50");
-	
-	
+	menuOptions = new ArrayList();
+	menuSelection = new ArrayList();
+	MenuService menuService = new MenuService();
+	menuOptions = menuService.findAllMenuItems();
     }
 
+    
     public void calculateOrder(HttpServletRequest request) {
-
-
-	//menuSelection = menuOptions; //set selection to all items by default
-
-	System.out.println(menuSelection.toString());
-	
-	//loop through all of the items and see if they were checked
-	//if they were checked, get the price and add new a new list
-	Iterator it = menuOptions.entrySet().iterator();
-	while (it.hasNext()) {
-	    Map.Entry pairs = (Map.Entry) it.next();
-	    //run through parameters and see if it exists
-	    String x = request.getParameter(pairs.getKey().toString());
-
-	    System.out.println(menuOptions.toString());
+	for (MenuItem m: menuOptions) {
+   
+	    String x = request.getParameter(String.valueOf(m.getItemId()));
 	    
-	    if (x == null) {
-		//System.out.println("removed " + pairs.getKey().toString());
+	    if (x != null) {
 	    } else {
-		double d = Double.valueOf(pairs.getValue().toString());
+		double d = m.getPrice();
 		orderSubTotal += d;
-		menuSelection.put(pairs.getKey().toString(), pairs.getValue().toString()); //add to selection
-	    }
-	    it.remove(); // avoids a ConcurrentModificationException	    
+		menuSelection.add(m); //add to selection
+	    }   
 	}
 
 	
